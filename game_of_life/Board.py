@@ -68,6 +68,12 @@ class Board:
         '''
         self.board = [[1 if random.random() > 0.8 else 0 for i in range(self.n)] for j in range(self.m)]
 
+    def clearBoard(self):
+        '''
+        clear board
+        '''
+        self.board = [[0]*self.n for _ in range(self.m)]
+
 
 if __name__ == '__main__':
     # board = [[0, 0, 1, 0, 0, 0, 1, 0, 0],
