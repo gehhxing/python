@@ -50,8 +50,10 @@ class Board:
                 num = self.aroundNum(i, j)
                 if num in [0, 1, 4, 5, 6, 7, 8, 9]:
                     self.next_board[i][j] = 0
-                if num == 3:
+                elif num == 3:
                     self.next_board[i][j] = 1
+                else:
+                    self.next_board[i][j] = self.board[i][j]
         self.board = copy.deepcopy(self.next_board)
 
     def printBoard(self):
@@ -67,6 +69,11 @@ class Board:
         random cell on board
         '''
         self.board = [[1 if random.random() > 0.8 else 0 for i in range(self.n)] for j in range(self.m)]
+
+    def changeCell(self, x, y):
+        '''
+        '''
+        self.board[y][x] = int(not self.board[y][x])
 
     def clearBoard(self):
         '''

@@ -2,16 +2,8 @@ import tkinter as tk
 import Board
 import threading
 
-board_init = [[0, 0, 0, 1, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 1, 0, 0, 0, 0],
-              [0, 0, 1, 1, 1, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
+WIDTH = 70
+HEIGHT = 60
 
 class Draw:
     '''
@@ -26,7 +18,7 @@ class Draw:
         self.root = tk.Tk()
         self.root.geometry('700x700')  # 界面大小700x700
         # 在界面中画出一个700*600的画布，画布颜色黑色
-        self.cv = tk.Canvas(self.root, bg='black', width=700, height=600)
+        self.cv = tk.Canvas(self.root, bg='black', width=WIDTH*10, height=HEIGHT*10)
         self.cv.pack()
         self.button_auto = tk.Button(self.root, text='AutoPlay', command=self.startLoop)
         self.button_auto.pack(side=tk.LEFT)
@@ -38,9 +30,11 @@ class Draw:
         self.button_clr.pack(side=tk.LEFT)
         self.button_random = tk.Button(self.root, text='Random', command=self.boardRandom)
         self.button_random.pack(side=tk.LEFT)
-        self.board_a = Board.Board(m=60, n=70)
+        self.board_a = Board.Board(m=HEIGHT, n=WIDTH)
         # self.timer = threading.Timer(0.2, self.autoLoop)
         self.LOOP_SWITCH = False
+        self.x_cell = 0
+        self.y_cell = 0
 
         # self.cv.update_idletasks()
 
@@ -54,14 +48,26 @@ class Draw:
                 tag_pos = '{}_{}'.format(i, j)
                 if self.board_a.board[i][j] == 1:
                     self.cv.create_rectangle(j*10, i*10, (j+1)*10, (i+1)*10, fill='blue', tags=('cell', tag_pos))
-        self.cv.pack()
+                    self.cv.pack()
+                else:
+                    self.cv.create_rectangle(j*10, i*10, (j+1)*10, (i+1)*10, fill='black', tags=('cell', tag_pos))
+                    self.cv.pack()
 
     def nextBoardEvent(self, event):
         '''
         enent trigger
         '''
-        self.board_a.nextState()
+        # self.board_a.nextState()
+        # self.printScreen()
+        self.board_a.changeCell(event.x//10, event.y//10)
+        # print(event.x//10, event.y//10)
         self.printScreen()
+        # print(event.widget)
+        # print(type(event.widget))
+        # print(event.x)
+        # print(event.y)
+        # print(event.num)
+        # print(event.type)
 
     def nextBoard(self):
         '''
@@ -81,7 +87,7 @@ class Draw:
         '''
         click left mouse button to trigger nextBoardEvent()
         '''
-        self.cv.bind_all('<Button-1>', self.nextBoardEvent)
+        self.cv.tag_bind('cell', '<ButtonRelease-1>', self.nextBoardEvent)
         self.cv.pack()
 
     def autoLoop(self):
@@ -116,8 +122,10 @@ class Draw:
         self.board_a.clearBoard()
         self.printScreen()
 
-    def a(self):
-        pass
+    def changeCell(self):
+        '''
+        '''
+        self.clickLeft()
 
     def start(self):
         '''
@@ -126,25 +134,9 @@ class Draw:
         self.printScreen()
         self.boardRandom()
         # self.autoLoop()
-        # self.clickLeft()
+        self.changeCell()
         self.root.mainloop()
 
 
 if __name__ == '__main__':
     Draw().start()
-
-
-# root = tk.Tk()
-# # 创建一个Canvas，设置其背景色为白色
-# cv = tk.Canvas(root,bg = 'white')
-# # 创建三个rectangle
-# rt1 = cv.create_rectangle(
-#     10,10,110,110,
-#     width = 8,
-#     tags = ('r1','r2','r3'))
-# def printRect(event):
-#     print('rectangle')
-# # 绑定item与事件，单击
-# cv.tag_bind('r2','<Button-1>',printRect)
-# cv.pack()
-# root.mainloop()
